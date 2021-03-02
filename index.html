@@ -101,8 +101,12 @@
     
  <script>
 
+if(localStorage.getItem('listData') != null){
+  todoDataAry = JSON.parse(localStorage.getItem('listData'));
+}
 
-var todoDataAry = JSON.parse(localStorage.getItem('listData'));
+
+
 
 
 
