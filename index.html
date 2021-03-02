@@ -105,10 +105,6 @@
 var todoDataAry = JSON.parse(localStorage.getItem('listData'));
 
 
-function getLocalStorageSet(){
-      localStorage.setItem('listData', JSON.stringify(this.todos));
-      todoDataAry = JSON.parse(localStorage.getItem('listData'));
-    };
 
 var app = new Vue({
   el:'#app',
@@ -147,9 +143,9 @@ var app = new Vue({
       });
       this.newTodo = '';
       
-      getLocalStorageSet();
-      // localStorage.setItem('listData', JSON.stringify(this.todos));
-      // todoDataAry = JSON.parse(localStorage.getItem('listData'));
+      
+      localStorage.setItem('listData', JSON.stringify(this.todos));
+      todoDataAry = JSON.parse(localStorage.getItem('listData'));
 
 
     },
@@ -194,10 +190,12 @@ var app = new Vue({
 
   },
   computed:{
+
+        
     filteredTodos:function(){
       this.todos = todoDataAry;
       if (this.visibility =='all'){
-
+        localStorage.setItem('listData', JSON.stringify(this.todos));
         return this.todos;
       }else if(this.visibility =='active'){
         var newTodos =[];
@@ -206,6 +204,7 @@ var app = new Vue({
             newTodos.push(item);
           }
         });
+        localStorage.setItem('listData', JSON.stringify(this.todos));
         return newTodos;
       }else if(this.visibility =='completed'){
         var newTodos =[];
@@ -214,6 +213,7 @@ var app = new Vue({
             newTodos.push(item);
           }
         });
+        localStorage.setItem('listData', JSON.stringify(this.todos));
         return newTodos;
       }
       return [];
