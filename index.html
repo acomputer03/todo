@@ -128,6 +128,8 @@ var app = new Vue({
     //新增    
     addTodo:function(){
      
+      todoDataAry = JSON.parse(localStorage.getItem('listData'));
+      this.todos = todoDataAry;
       var value = this.newTodo.trim();
       var timestamp = Math.floor(Date.now());
       if(!value){
