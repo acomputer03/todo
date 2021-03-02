@@ -101,8 +101,12 @@
     
  <script>
 
-if(localStorage.getItem('listData') != undefined){
+var test1  = localStorage.getItem('listData');
+if (typeof test1 !== 'undefined') {
   todoDataAry = JSON.parse(localStorage.getItem('listData'));
+}else{
+  this.todos=[];
+  localStorage.setItem('listData', JSON.stringify(this.todos));
 }
 
 
