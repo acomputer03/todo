@@ -32,10 +32,10 @@
 <section class="container">
 
     <div class="row ">
-        <div class="col-3 py-5">
+        <div class="col-md-3 py-5">
             <img src="https://stickershop.line-scdn.net/stickershop/v1/product/8101/LINEStorePC/main.png;compress=true" alt="">
         </div>
-        <div class="col-9 ">
+        <div class="col-md-9 ">
             
             <div id="app" class=" py-5 ">
                 <div class="alert alert-success" role="alert">
@@ -100,12 +100,7 @@
 
     
  <script>
-var todo=[{
-        id:'123',
-        title:'212',
-        completed:false,
-      }]
-localStorage.setItem('listData', JSON.stringify(todo));
+
 
 var todoDataAry = JSON.parse(localStorage.getItem('listData'));
 
@@ -216,15 +211,20 @@ var app = new Vue({
       }
       return [];
     },
-    unfinished:function(){
+    unfinished:function(item){
       var unfinishTodo = [];
-
-      this.todos.forEach(function(item){
-        if(!item.completed){
-          unfinishTodo.push(item);
-        };
-      });
-      return unfinishTodo.length;
+      console.log(item)
+      if(item !==null){
+        this.todos.forEach(function(item){
+          if(!item.completed){
+            unfinishTodo.push(item);
+          };
+        });
+        return unfinishTodo.length;
+      }else{
+        return unfinishTodo.length=0;
+      }
+      
 
 
     }
