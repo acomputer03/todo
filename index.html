@@ -32,10 +32,10 @@
 <section class="container">
 
     <div class="row ">
-        <div class="col-3 py-5">
+        <div class="d-none d-lg-block col-lg-3 py-5">
             <img src="https://stickershop.line-scdn.net/stickershop/v1/product/8101/LINEStorePC/main.png;compress=true" alt="">
         </div>
-        <div class="col-9 ">
+        <div class="col  col-lg-9 ">
             
             <div id="app" class=" py-5 ">
                 <div class="alert alert-success" role="alert">
@@ -190,7 +190,8 @@ var app = new Vue({
     filteredTodos:function(){
       this.todos = todoDataAry;
       if (this.visibility =='all'){
-
+        localStorage.setItem('todoData', JSON.stringify(this.todos));
+        todoDataAry = JSON.parse(localStorage.getItem('todoData'));
         return this.todos;
       }else if(this.visibility =='active'){
         var newTodos =[];
