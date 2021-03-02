@@ -214,7 +214,10 @@ var app = new Vue({
     unfinished:function(){
       var unfinishTodo = [];
       this.todos = todoDataAry;
-      
+      if(this.todos == null){
+        return
+
+      }
       this.todos.forEach(function(item){
         if(!item.completed){
           unfinishTodo.push(item);
