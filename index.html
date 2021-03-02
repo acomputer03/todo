@@ -125,6 +125,11 @@ var app = new Vue({
   },
   methods: {
     
+    getLocalStorageSet:function(){
+      localStorage.setItem('listData', JSON.stringify(this.todos));
+      todoDataAry = JSON.parse(localStorage.getItem('listData'));
+    },
+
     //新增    
     addTodo:function(){
      
@@ -142,9 +147,9 @@ var app = new Vue({
       });
       this.newTodo = '';
       
-
-      localStorage.setItem('listData', JSON.stringify(this.todos));
-      todoDataAry = JSON.parse(localStorage.getItem('listData'));
+      getLocalStorageSet();
+      // localStorage.setItem('listData', JSON.stringify(this.todos));
+      // todoDataAry = JSON.parse(localStorage.getItem('listData'));
 
 
     },
