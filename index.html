@@ -211,19 +211,17 @@ var app = new Vue({
       }
       return [];
     },
-    unfinished:function(item){
+    unfinished:function(){
       var unfinishTodo = [];
-      console.log(item)
-      if(item !==null){
-        this.todos.forEach(function(item){
-          if(!item.completed){
-            unfinishTodo.push(item);
-          };
-        });
-        return unfinishTodo.length;
-      }else{
-        return unfinishTodo.length=0;
-      }
+      this.todos = todoDataAry;
+      
+      this.todos.forEach(function(item){
+        if(!item.completed){
+          unfinishTodo.push(item);
+        };
+      });
+      return unfinishTodo.length;
+     
       
 
 
