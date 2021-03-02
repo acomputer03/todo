@@ -32,10 +32,10 @@
 <section class="container">
 
     <div class="row ">
-        <div class=" d-none d-lg-block col-lg-3 py-5">
+        <div class="col-3 py-5">
             <img src="https://stickershop.line-scdn.net/stickershop/v1/product/8101/LINEStorePC/main.png;compress=true" alt="">
         </div>
-        <div class="col col-lg-9 ">
+        <div class="col-9 ">
             
             <div id="app" class=" py-5 ">
                 <div class="alert alert-success" role="alert">
@@ -101,16 +101,8 @@
     
  <script>
 
-var test1  = localStorage.getItem('listData');
-if (typeof test1 !== 'undefined') {
-  todoDataAry = JSON.parse(localStorage.getItem('listData'));
-}else{
-  this.todos=[];
-  localStorage.setItem('listData', JSON.stringify(this.todos));
-}
 
-
-
+var todoDataAry = JSON.parse(localStorage.getItem('listData'))||[];
 
 
 
@@ -136,8 +128,6 @@ var app = new Vue({
     //新增    
     addTodo:function(){
      
-      todoDataAry = JSON.parse(localStorage.getItem('listData'));
-      this.todos = todoDataAry;
       var value = this.newTodo.trim();
       var timestamp = Math.floor(Date.now());
       if(!value){
@@ -223,18 +213,13 @@ var app = new Vue({
     },
     unfinished:function(){
       var unfinishTodo = [];
-      this.todos = todoDataAry;
-      if(this.todos == null){
-        return 0;
-      }
+
       this.todos.forEach(function(item){
         if(!item.completed){
           unfinishTodo.push(item);
         };
       });
       return unfinishTodo.length;
-     
-      
 
 
     }
