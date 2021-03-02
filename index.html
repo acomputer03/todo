@@ -189,9 +189,9 @@ var app = new Vue({
   computed:{
     filteredTodos:function(){
       this.todos = todoDataAry;
+      localStorage.setItem('todoData', JSON.stringify(this.todos));
       if (this.visibility =='all'){
-        localStorage.setItem('todoData', JSON.stringify(this.todos));
-        todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+        
         return this.todos;
       }else if(this.visibility =='active'){
         var newTodos =[];
@@ -200,8 +200,7 @@ var app = new Vue({
             newTodos.push(item);
           }
         });
-        localStorage.setItem('todoData', JSON.stringify(this.todos));
-        todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+        
         return newTodos;
       }else if(this.visibility =='completed'){
         var newTodos =[];
@@ -210,8 +209,7 @@ var app = new Vue({
             newTodos.push(item);
           }
         });
-        localStorage.setItem('todoData', JSON.stringify(this.todos));
-        todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+        
         return newTodos;
       }
       return [];
