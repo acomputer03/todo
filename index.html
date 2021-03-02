@@ -105,7 +105,10 @@
 var todoDataAry = JSON.parse(localStorage.getItem('listData'));
 
 
-
+function getLocalStorageSet(){
+      localStorage.setItem('listData', JSON.stringify(this.todos));
+      todoDataAry = JSON.parse(localStorage.getItem('listData'));
+    };
 
 var app = new Vue({
   el:'#app',
@@ -125,10 +128,7 @@ var app = new Vue({
   },
   methods: {
     
-    getLocalStorageSet:function(){
-      localStorage.setItem('listData', JSON.stringify(this.todos));
-      todoDataAry = JSON.parse(localStorage.getItem('listData'));
-    },
+    
 
     //新增    
     addTodo:function(){
