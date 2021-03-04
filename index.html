@@ -14,18 +14,18 @@
   </head>
   
 <style>
-    .completed {
+.completed {
   text-decoration: line-through
 }
 .btn-bgcover{
-  background-color: 	#8B00FF;
+  background-color: #8B00FF;
 }
 .text-cover{
-  color: 	#8B00FF;
+  color: #8B00FF;
 }
 </style>
 
-  <body>
+<body>
     
     
 
@@ -54,23 +54,23 @@
                   <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs nav-fill">
                       <li class="nav-item">
+                        <a class="nav-link text-cover" :class="{'active':visibility=='all'}" @click="visibility='all'" href="#">全部</a>
+                      </li>
+                      <li class="nav-item">
                         <a class="nav-link text-cover" :class="{'active':visibility=='active'}" @click="visibility='active'" href="#">進行中</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link text-cover" :class="{'active':visibility=='completed'}" @click="visibility='completed'"  href="#">已完成</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link text-cover" :class="{'active':visibility=='all'}" @click="visibility='all'" href="#">全部</a>
-                      </li> 
+                      </li>                       
                     </ul>
                   </div>
                   <ul class="list-group list-group-flush text-left">
-                    <li class="list-group-item" v-for="(item,key) in filteredTodos" @dblclick="editTodo(item)">
+                    <li class="list-group-item" v-for="(item,key) in filteredTodos" :key="item.id" @dblclick="editTodo(item)">
                       <div class="d-flex" v-if="item.id !== cacheTodo.id">
                         <div class="form-check">
                           <input type="checkbox" class="form-check-input " v-model="item.completed" :id="item.id">
                           <label class="form-check-label ml-2" :class="{'completed':item.completed}" :for="item.id">
-                            {{key+1}}.    {{item.title}}
+                            {{key+1}}.{{item.title}}
                           </label>
                         </div>
                         <button type="button" class="close ml-auto" @click="removeTodo(item)" aria-label="Close">
@@ -107,6 +107,7 @@ var todoDataAry = JSON.parse(localStorage.getItem('todoData'))||[];
 
 
 
+
 var app = new Vue({
   el:'#app',
   data:{
@@ -120,7 +121,7 @@ var app = new Vue({
     ],
     cacheTodo:{},
     cacheTitle:'',
-    visibility:'active',
+    visibility:'all',
 
   },
   methods: {
@@ -140,9 +141,10 @@ var app = new Vue({
       });
       this.newTodo = '';
       
-
       localStorage.setItem('todoData', JSON.stringify(this.todos));
       todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+
+ 
 
 
     },
@@ -157,66 +159,83 @@ var app = new Vue({
       })
       this.todos.splice(newIndex,1);
 
-
       localStorage.setItem('todoData', JSON.stringify(this.todos));
       todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+
+    
     },
     //修改
     editTodo:function(item){
       this.cacheTodo = item;
       this.cacheTitle = item.title;
+
       localStorage.setItem('todoData', JSON.stringify(this.todos));
       todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+
+
     },
     cacelEdit:function(){
       this.cacheTodo = {};
+
+
     },
     doneEdit:function(item){
       item.title = this.cacheTitle;
       this.cacheTitle = '';
       this.cacheTodo = {};
+
+
       localStorage.setItem('todoData', JSON.stringify(this.todos));
       todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+
+      
     },
     clearAll:function(){
       this.todos=[];
       localStorage.setItem('todoData', JSON.stringify(this.todos));
       todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+   
 
     }
 
   },
   computed:{
-    filteredTodos:function(){
+    filteredTodos:function(){ 
       this.todos = todoDataAry;
       localStorage.setItem('todoData', JSON.stringify(this.todos));
-      if (this.visibility =='all'){
-        
+      
+      if (this.visibility =='all'){         
         return this.todos;
       }else if(this.visibility =='active'){
         var newTodos =[];
-        this.todos.forEach(function(item){
+        
+        this.todos.forEach(function(item){ 
+          
           if(!item.completed){
             newTodos.push(item);
+            
           }
         });
         
         return newTodos;
       }else if(this.visibility =='completed'){
         var newTodos =[];
+           
         this.todos.forEach(function(item){
           if(item.completed){
             newTodos.push(item);
+            
           }
         });
         
         return newTodos;
       }
+      
       return [];
     },
     unfinished:function(){
       var unfinishTodo = [];
-
+  
       this.todos.forEach(function(item){
         if(!item.completed){
           unfinishTodo.push(item);
