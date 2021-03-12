@@ -100,7 +100,7 @@
 
         <div class="col-md-12 py-3">
           <div class="card h-100">
-            <div class="card-header h2  text-success ">全部的待辦事項</div>
+            <div class="card-header h2  text-secondary ">全部的待辦事項</div>
             <div class="card-body">
               <ul class="list-group">
                 <li class="list-group-item text-left" v-for="(item,key) in totalTodos" :key="item.id">
@@ -121,125 +121,12 @@
 
 
 
-  <script>
-    var app = new Vue({
-      el: '#app',
-      data: {
-        newTodo: '',
-        todo: {},
-        tempTodo: [],
-        whatTimetodo: '',
-        info: null
-      },
-      methods: {
-        addTodo: function () {
-
-          const vm = this;
-          var value = vm.newTodo.trim();
-          if (!value) {
-            return;
-          };
-
-          vm.todos = {
-            content: value,
-            timetodo: vm.whatTimetodo,
-          };
-          vm.newTodo = '';
-          vm.whatTimetodo = '';
-          // const api = '127.0.0.1:3000/addTodo';
-
-          console.log(vm.todos)
-          const api = `https://warm-shore-54768.herokuapp.com/addTodo`;
-
-          axios.post(api, vm.todos)
-            .then((res) => {
-              console.log(res);
-              vm.getTodo(); 
-            })
-            .catch((error) => { console.error(error) })
-          
-          //  axios.post(api, vm.todos ).then(response => {
-          //   console.log(response);
-          // });
-
-
-
-        },
-        getTodo: function () {
-          const vm = this;
-
-          const api = 'https://warm-shore-54768.herokuapp.com/getTodo';
-          axios.get(api).then(response => {
-            // console.log(response.data.list);
-            vm.tempTodo = response.data.list;
-            // console.log(vm.tempTodo )
-            return vm.tempTodo;
-
-          });
-        }
-      },
-      computed: {
-        todayFilteredTodos: function () {
-          var vm = this;
-          var newTodos = [];
-          vm.tempTodo.forEach(function (item) {
-            // console.log(item )
-            if (item.timetodo == "今天") {
-              newTodos.push(item);
-            }
-          });
-          return newTodos;
-        },
-        tomorrowFilteredTodos: function () {
-          var vm = this;
-          var newTodos = [];
-          vm.tempTodo.forEach(function (item) {
-            // console.log(item )
-            if (item.timetodo == "明天") {
-              newTodos.push(item);
-            }
-          });
-          return newTodos;
-        },
-        thisWeekFilteredTodos: function () {
-          var vm = this;
-          var newTodos = [];
-          vm.tempTodo.forEach(function (item) {
-            // console.log(item )
-            if (item.timetodo == "這禮拜") {
-              newTodos.push(item);
-            }
-          });
-          return newTodos;
-        },
-        thisMonthFilteredTodos: function () {
-          var vm = this;
-          var newTodos = [];
-          vm.tempTodo.forEach(function (item) {
-            // console.log(item )
-            if (item.timetodo == "這個月") {
-              newTodos.push(item);
-            }
-          });
-          return newTodos;
-        },
-        totalTodos: function () {    
-          const vm = this;      
-          return vm.tempTodo;
-        },
-      },
-      created() {
-        
-        this.getTodo()
-      },
-
-    });
-  </script>
+ 
 
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->  
-  <script src="/todo.js"></script>
+  <script src="todo.js"></script>
   <!-- <script src="./todo.css"></script> -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
