@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!-- 生产环境版本，优化了尺寸和速度 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" >
+    
+    <title>待辦事項!</title>
+  </head>
+  
+<style>
+    .completed {
+  text-decoration: line-through
+}
+.btn-bgcover{
+  background-color: 	#8B00FF;
+}
+.text-cover{
+  color: 	#8B00FF;
+}
+</style>
+
+  <body>
+    
+    
+
+<section class="container">
+
+    <div class="row ">
+        <div class="d-none d-lg-block col-lg-3 py-5">
+            <img src="https://stickershop.line-scdn.net/stickershop/v1/product/8101/LINEStorePC/main.png;compress=true" alt="">
+        </div>
+        <div class="col  col-lg-9 ">
+            
+            <div id="app" class=" py-5 ">
+                <div class="alert alert-success" role="alert">
+                    <h1>待辦事項!!тｏ𝔻ｏＬเ𝐒𝔱</h1>
+                </div>
+                <div class="input-group pb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">待辦事項</span>
+                  </div>
+                  <input type="text" class="form-control" placeholder="請輸入任務" v-model="newTodo" @keyup.enter="addTodo">
+                  <div class="input-group-append">
+                    <button class="btn btn-bgcover text-white" type="button" @click="addTodo">新增</button>
+                  </div>
+                </div>
+                <div class="card text-center">
+                  <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs nav-fill">
+                      <li class="nav-item">
+                        <a class="nav-link text-cover" :class="{'active':visibility=='active'}" @click="visibility='active'" href="#">進行中</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link text-cover" :class="{'active':visibility=='completed'}" @click="visibility='completed'"  href="#">已完成</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link text-cover" :class="{'active':visibility=='all'}" @click="visibility='all'" href="#">全部</a>
+                      </li> 
+                    </ul>
+                  </div>
+                  <ul class="list-group list-group-flush text-left">
+                    <li class="list-group-item" v-for="(item,key) in filteredTodos"  :key="item.id" @dblclick="editTodo(item)">
+                      <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                        <div class="form-check">
+                          <input type="checkbox" class="form-check-input " v-model="item.completed" :id="item.id">
+                          <label class="form-check-label ml-2" :class="{'completed':item.completed}" :for="item.id">
+                            {{key+1}}.    {{item.title}}
+                          </label>
+                        </div>
+                        <button type="button" class="close ml-auto" @click="removeTodo(item)" aria-label="Close">
+                          <div><i class="far fa-trash-alt "></i></div>
+                          <!-- <span aria-hidden="true">&times;</span> -->
+                        </button>
+                      </div>
+                      <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
+                    </li>                    
+                    <!-- <li class="list-group-item">
+                      <input type="text" class="form-control">
+                    </li> -->
+                  </ul>
+                  <div class="card-footer d-flex justify-content-between">
+                    <span class="text-cover">還有 {{unfinished}} 件事情未完成</span>
+                    <a href="#" class="text-cover" @click="clearAll">清除所有任務</a>
+                  </div>
+                </div>
+              </div>
+
+        </div>
+
+    </div>
+
+</section> 
+    
+
+    
+ <script>
+
+
+var todoDataAry = JSON.parse(localStorage.getItem('todoData'))||[];
+
+
+
+
+var app = new Vue({
+  el:'#app',
+  data:{
+    newTodo:'',
+    todos:[
+      {
+        id:'',
+        title:'',
+        completed:false,
+      }
+    ],
+    cacheTodo:{},
+    cacheTitle:'',
+    visibility:'active',
+
+  },
+  methods: {
+    
+    //新增    
+    addTodo:function(){
+     
+      var value = this.newTodo.trim();
+      var timestamp = Math.floor(Date.now());
+      if(!value){
+        return;
+      }
+      this.todos.push({
+        id:timestamp,
+        title:value,
+        completed:false,
+      });
+      this.newTodo = '';
+      
+
+      localStorage.setItem('todoData', JSON.stringify(this.todos));
+      todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+
+
+    },
+    //刪除  
+    removeTodo:function(todo){
+      var newIndex = '';
+      var vm = this;
+      vm.todos.forEach(function(item,key){
+        if(todo.id === item.id){
+          newIndex = key;
+        }
+      })
+      this.todos.splice(newIndex,1);
+
+
+      localStorage.setItem('todoData', JSON.stringify(this.todos));
+      todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+    },
+    //修改
+    editTodo:function(item){
+      this.cacheTodo = item;
+      this.cacheTitle = item.title;
+      localStorage.setItem('todoData', JSON.stringify(this.todos));
+      todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+    },
+    cacelEdit:function(){
+      this.cacheTodo = {};
+    },
+    doneEdit:function(item){
+      item.title = this.cacheTitle;
+      this.cacheTitle = '';
+      this.cacheTodo = {};
+      localStorage.setItem('todoData', JSON.stringify(this.todos));
+      todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+    },
+    clearAll:function(){
+      this.todos=[];
+      localStorage.setItem('todoData', JSON.stringify(this.todos));
+      todoDataAry = JSON.parse(localStorage.getItem('todoData'));
+
+    }
+
+  },
+  computed:{
+    filteredTodos:function(){
+      this.todos = todoDataAry;
+      localStorage.setItem('todoData', JSON.stringify(this.todos));
+      if (this.visibility =='all'){
+        
+        return this.todos;
+      }else if(this.visibility =='active'){
+        var newTodos =[];
+        this.todos.forEach(function(item){
+          if(!item.completed){
+            newTodos.push(item);
+          }
+        });
+        
+        return newTodos;
+      }else if(this.visibility =='completed'){
+        var newTodos =[];
+        this.todos.forEach(function(item){
+          if(item.completed){
+            newTodos.push(item);
+          }
+        });
+        
+        return newTodos;
+      }
+      return [];
+    },
+    unfinished:function(){
+      var unfinishTodo = [];
+
+      this.todos.forEach(function(item){
+        if(!item.completed){
+          unfinishTodo.push(item);
+        };
+      });
+      return unfinishTodo.length;
+
+
+    }
+  },
+  
+  
+  
+});
+
+
+
+ </script>   
+
+
+
+
+
+
+
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    
+  </body>
+</html>
