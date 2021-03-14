@@ -3,9 +3,11 @@
       el: '#app',
       data: {
         newTodo: '',
-        todo: {},
-        tempTodo: [],
+        addnewtodo: {},
+        Todo: [],
         whatTimetodo: '',
+        cacheTodo:{},
+        cacheTitle:'',
         info: null
       },
       methods: {
@@ -13,11 +15,15 @@
 
           const vm = this;
           var value = vm.newTodo.trim();
-          if (!value) {
+          console.log(vm.whatTimetodo )
+          // if( vm.whatTimetodo ===""){
+          //   return;
+          // }
+          if (!value || vm.whatTimetodo ==="") {
             return;
           };
 
-          vm.todos = {
+          vm.addnewtodo = {
             content: value,
             timetodo: vm.whatTimetodo,
           };
@@ -25,10 +31,10 @@
           vm.whatTimetodo = '';
           // const api = '127.0.0.1:3000/addTodo';
 
-          console.log(vm.todos)
+          console.log(vm.addnewtodo)
           const api = `https://warm-shore-54768.herokuapp.com/addTodo`;
 
-          axios.post(api, vm.todos)
+          axios.post(api, vm.addnewtodo)
             .then((res) => {
               console.log(res);
               vm.getTodo(); 
@@ -48,18 +54,67 @@
           const api = 'https://warm-shore-54768.herokuapp.com/getTodo';
           axios.get(api).then(response => {
             // console.log(response.data.list);
-            vm.tempTodo = response.data.list;
-            // console.log(vm.tempTodo )
-            return vm.tempTodo;
+            vm.Todo = response.data.list;
+            // console.log(vm.Todo )
+            return vm.Todo;
 
           });
-        }
+        },
+        delTodo: function (item) {
+          // console.log(item )
+          const vm = this;
+          const api = `https://warm-shore-54768.herokuapp.com/deleteTodo/${item.id}`;
+          
+          // console.log(process.env.APIPATH,process.env.CUSTOMPATH)
+          axios.delete(api).then((response) => {
+            console.log(response.data);
+            vm.getTodo(); 
+            
+          });
+        },
+        editTodo: function (item){
+          const vm = this;
+          vm.cacheTodo = item;
+          vm.cacheTitle = item.content;          
+        },
+
+        doneEdit:function(item){
+          const vm = this;
+          item.content = vm.cacheTitle;
+          vm.cacheTitle = '';
+          vm.cacheTodo = {};          
+          const api = `https://warm-shore-54768.herokuapp.com/updataTodo/${item.id}`;
+
+          axios.put(api, item)
+            .then((res) => {
+              console.log(res);
+              vm.getTodo(); 
+            })
+            .catch((error) => { console.error(error) })         
+        },
+        cacelEdit:function(){
+          this.cacheTodo = {};
+        },
+        
+        // editTodo:function(item){
+        //   const vm = this;
+        //   const api = `https://warm-shore-54768.herokuapp.com/deleteTodo/${item.id}`;
+
+
+
+        // },
+        
+        //修改
+        
+
+
+        
       },
       computed: {
         todayFilteredTodos: function () {
           var vm = this;
           var newTodos = [];
-          vm.tempTodo.forEach(function (item) {
+          vm.Todo.forEach(function (item) {
             // console.log(item )
             if (item.timetodo == "今天") {
               newTodos.push(item);
@@ -70,7 +125,7 @@
         tomorrowFilteredTodos: function () {
           var vm = this;
           var newTodos = [];
-          vm.tempTodo.forEach(function (item) {
+          vm.Todo.forEach(function (item) {
             // console.log(item )
             if (item.timetodo == "明天") {
               newTodos.push(item);
@@ -81,7 +136,7 @@
         thisWeekFilteredTodos: function () {
           var vm = this;
           var newTodos = [];
-          vm.tempTodo.forEach(function (item) {
+          vm.Todo.forEach(function (item) {
             // console.log(item )
             if (item.timetodo == "這禮拜") {
               newTodos.push(item);
@@ -92,7 +147,7 @@
         thisMonthFilteredTodos: function () {
           var vm = this;
           var newTodos = [];
-          vm.tempTodo.forEach(function (item) {
+          vm.Todo.forEach(function (item) {
             // console.log(item )
             if (item.timetodo == "這個月") {
               newTodos.push(item);
@@ -102,7 +157,7 @@
         },
         totalTodos: function () {    
           const vm = this;      
-          return vm.tempTodo;
+          return vm.Todo;
         },
       },
       created() {

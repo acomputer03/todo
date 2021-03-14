@@ -44,9 +44,21 @@
           <div class="card h-100">
             <div class="card-header h2 text-danger ">今日待辦事項</div>
             <div class="card-body">
-              <ul class="list-group">
-                <li class="list-group-item text-left" v-for="(item,key) in todayFilteredTodos" :key="item.id">
-                  {{key +1 }}. {{item.content}}
+              <ul class="list-group list-group-flush text-left">
+                <li class="list-group-item " v-for="(item,key) in todayFilteredTodos" :key="item.id">
+                  <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                    {{key +1 }}. {{item.content}}
+                    
+                    <button type="button" class="close ml-auto" @click="editTodo(item)" aria-label="Close">
+                      <div><i class="fas fa-pencil-alt"></i></div>                     
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                    <button type="button" class="close ml-3" @click="delTodo(item)" aria-label="Close">
+                      <div><i class="far fa-trash-alt "></i></div>                      
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                </div>
+                <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
                 </li>
 
               </ul>
@@ -58,9 +70,21 @@
           <div class="card h-100">
             <div class="card-header h2 text-warning ">明日待辦事項</div>
             <div class="card-body">
-              <ul class="list-group">
-                <li class="list-group-item text-left" v-for="(item,key) in tomorrowFilteredTodos" :key="item.id">
-                  {{key +1 }}. {{item.content}}
+              <ul class="list-group list-group-flush text-left">
+                <li class="list-group-item " v-for="(item,key) in tomorrowFilteredTodos" :key="item.id">
+                  <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                    {{key +1 }}. {{item.content}}
+                    
+                    <button type="button" class="close ml-auto" @click="editTodo(item)" aria-label="Close">
+                      <div><i class="fas fa-pencil-alt"></i></div>                     
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                    <button type="button" class="close ml-3" @click="delTodo(item)" aria-label="Close">
+                      <div><i class="far fa-trash-alt "></i></div>                      
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                </div>
+                <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
                 </li>
 
               </ul>
@@ -72,9 +96,21 @@
           <div class="card h-100">
             <div class="card-header h2  text-info ">這週待辦事項</div>
             <div class="card-body">
-              <ul class="list-group">
-                <li class="list-group-item text-left" v-for="(item,key) in thisWeekFilteredTodos" :key="item.id">
-                  {{key +1 }}. {{item.content}}
+              <ul class="list-group list-group-flush text-left">
+                <li class="list-group-item " v-for="(item,key) in thisWeekFilteredTodos" :key="item.id">
+                  <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                    {{key +1 }}. {{item.content}}
+                    
+                    <button type="button" class="close ml-auto" @click="editTodo(item)" aria-label="Close">
+                      <div><i class="fas fa-pencil-alt"></i></div>                     
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                    <button type="button" class="close ml-3" @click="delTodo(item)" aria-label="Close">
+                      <div><i class="far fa-trash-alt "></i></div>                      
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                </div>
+                <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
                 </li>
 
               </ul>
@@ -86,9 +122,21 @@
           <div class="card h-100">
             <div class="card-header h2  text-success ">這個月待辦事項</div>
             <div class="card-body">
-              <ul class="list-group">
-                <li class="list-group-item text-left" v-for="(item,key) in thisMonthFilteredTodos" :key="item.id">
-                  {{key +1 }}. {{item.content}}
+              <ul class="list-group list-group-flush text-left">
+                <li class="list-group-item " v-for="(item,key) in thisMonthFilteredTodos" :key="item.id">
+                  <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                    {{key +1 }}. {{item.content}}
+                    
+                    <button type="button" class="close ml-auto" @click="editTodo(item)" aria-label="Close">
+                      <div><i class="fas fa-pencil-alt"></i></div>                     
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                    <button type="button" class="close ml-3" @click="delTodo(item)" aria-label="Close">
+                      <div><i class="far fa-trash-alt "></i></div>                      
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                </div>
+                <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
                 </li>
 
               </ul>
@@ -96,15 +144,27 @@
 
           </div>
         </div>
-
+        
 
         <div class="col-md-12 py-3">
           <div class="card h-100">
             <div class="card-header h2  text-secondary ">全部的待辦事項</div>
             <div class="card-body">
-              <ul class="list-group">
-                <li class="list-group-item text-left" v-for="(item,key) in totalTodos" :key="item.id">
-                  {{key +1 }}. {{item.content}}
+              <ul class="list-group list-group-flush text-left">
+                <li class="list-group-item " v-for="(item,key) in totalTodos" :key="item.id">
+                  <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                    {{key +1 }}. {{item.content}}
+                    
+                    <button type="button" class="close ml-auto" @click="editTodo(item)" aria-label="Close">
+                      <div><i class="fas fa-pencil-alt"></i></div>                     
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                    <button type="button" class="close ml-3" @click="delTodo(item)" aria-label="Close">
+                      <div><i class="far fa-trash-alt "></i></div>                      
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                </div>
+                <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
                 </li>
 
               </ul>
