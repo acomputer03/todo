@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+  <title>待辦事項</title>
+<style>
+  @media (min-width: 576px) { 
+        .title-size{
+            font-size: 5rem;
+        }
+     }
+</style>
+</head>
+
+<body style="background-color: #3C3C3C;">
+  <section class="container" id="app">
+    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+      <div class="col-md-8 p-lg-5 mx-auto my-3">
+        <h1 class="font-weight-normal title-size">𝓣𝓸 𝓓𝓸 𝓛𝓲𝓼𝓽~</h1>
+      </div>
+      <div  v-if="userName ">
+        <h2>{{userName}}，歡迎回來</h2>
+      </div>
+      <div class="input-group mb-3" v-if="userName ">
+        <div class="input-group-prepend" >
+          <span class="input-group-text px-3" id="basic-addon3">完成期限 ：</span>
+        </div>
+        <select class=" mr-1 text-center" v-model="whatTimetodo">
+          <!--有value傳value，沒有value就傳包含的文字-->
+          <option disabled value="">請選擇</option>
+          <option>今天</option>
+          <option>明天</option>
+          <option>這禮拜</option>
+          <option>這個月</option>
+        </select>
+        <input type="text" class="form-control" placeholder="請輸入任務" v-model="newTodo" @keyup.enter="addTodo"
+          aria-label="Text input with dropdown button">
+        <button class="btn btn-outline-secondary px-4" type="button" id="button-addon2" @click="addTodo">新增</button>
+      </div>
+      <div  class="text-center my-5" v-if="!userName">        
+          <h2 class="">~~~請先輸入姓名~~~</h2>  
+          <div class="input-group mb-3" >
+            <div class="input-group-prepend" >
+              <span class="input-group-text px-3" id="basic-addon3">姓名 ：</span>
+            </div>            
+            <input type="text" class="form-control" placeholder="請輸入姓名" v-model="newname" @keyup.enter="addUser"
+              aria-label="Text input with dropdown button">
+            <button class="btn btn-outline-secondary px-4" type="button" id="button-addon2" @click="addUser">確定</button>
+          </div> 
+      </div>
+      
+
+
+      <div class="row">
+        <div class="col-md-6 py-3 px-2">
+          <div class="card h-100">
+            <div class="card-header h2 text-danger ">今日待辦事項</div>
+            <div class="card-body">
+              <ul class="list-group text-left">
+                <li class="list-group-item " v-for="(item,key) in todayFilteredTodos" :key="item.id">
+                  <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                    <div class="mr-auto">
+                      {{key +1 }}. {{item.content}}
+                    </div>
+                    
+                    
+                    <button type="button" class="close ml-3 " @click="editTodo(item)" aria-label="Close">
+                      <div><i class="fas fa-pencil-alt"></i></div>                     
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                    <button type="button" class="close ml-3" @click="delTodo(item)" aria-label="Close">
+                      <div><i class="far fa-trash-alt "></i></div>                      
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                </div>
+                <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
+                </li>
+
+              </ul>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-md-6 py-3 px-2">
+          <div class="card h-100">
+            <div class="card-header h2 text-warning ">明日待辦事項</div>
+            <div class="card-body">
+              <ul class="list-group  text-left">
+                <li class="list-group-item " v-for="(item,key) in tomorrowFilteredTodos" :key="item.id">
+                  <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                    <div class="mr-auto">
+                      {{key +1 }}. {{item.content}}
+                    </div>
+                    
+                    <button type="button" class="close ml-3" @click="editTodo(item)" aria-label="Close">
+                      <div><i class="fas fa-pencil-alt"></i></div>                     
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                    <button type="button" class="close ml-3" @click="delTodo(item)" aria-label="Close">
+                      <div><i class="far fa-trash-alt "></i></div>                      
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                </div>
+                <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
+                </li>
+
+              </ul>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-md-6 py-3 px-2">
+          <div class="card h-100">
+            <div class="card-header h2  text-info ">這週待辦事項</div>
+            <div class="card-body">
+              <ul class="list-group text-left">
+                <li class="list-group-item " v-for="(item,key) in thisWeekFilteredTodos" :key="item.id">
+                  <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                    <div class="mr-auto">
+                      {{key +1 }}. {{item.content}}
+                    </div>
+                    
+                    <button type="button" class="close ml-3" @click="editTodo(item)" aria-label="Close">
+                      <div><i class="fas fa-pencil-alt"></i></div>                     
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                    <button type="button" class="close ml-3" @click="delTodo(item)" aria-label="Close">
+                      <div><i class="far fa-trash-alt "></i></div>                      
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                </div>
+                <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
+                </li>
+
+              </ul>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-md-6 py-3 px-2">
+          <div class="card h-100">
+            <div class="card-header h2  text-success ">這個月待辦事項</div>
+            <div class="card-body">
+              <ul class="list-group text-left">
+                <li class="list-group-item " v-for="(item,key) in thisMonthFilteredTodos" :key="item.id">
+                  <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                    <div class="mr-auto">
+                      {{key +1 }}. {{item.content}}
+                    </div>
+                    
+                    <button type="button" class="close ml-3" @click="editTodo(item)" aria-label="Close">
+                      <div><i class="fas fa-pencil-alt"></i></div>                     
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                    <button type="button" class="close ml-3" @click="delTodo(item)" aria-label="Close">
+                      <div><i class="far fa-trash-alt "></i></div>                      
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                </div>
+                <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
+                </li>
+
+              </ul>
+            </div>
+
+          </div>
+        </div>
+        
+
+        <div class="col-md-12 py-3">
+          <div class="card h-100">
+            <div class="card-header h2  text-secondary ">全部的待辦事項</div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush text-left">
+                <li class="list-group-item " v-for="(item,key) in totalTodos" :key="item.id">
+                  <div class="d-flex" v-if="item.id !== cacheTodo.id">
+                    <div class="mr-auto">
+                      {{key +1 }}. {{item.content}}
+                    </div>
+                    
+                    <button type="button" class="close ml-3" @click="editTodo(item)" aria-label="Close">
+                      <div><i class="fas fa-pencil-alt"></i></div>                     
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                    <button type="button" class="close ml-3" @click="delTodo(item)" aria-label="Close">
+                      <div><i class="far fa-trash-alt "></i></div>                      
+                      <!-- <span aria-hidden="true">&times;</span>  -->
+                    </button>
+                </div>
+                <input type="text" class="form-control" v-model="cacheTitle" @keyup.esc="cacelEdit()" @keyup.enter="doneEdit(item)" v-if="item.id === cacheTodo.id">
+                </li>
+
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+  </section>
+
+
+
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->  
+  <script src="todo2.js"></script>
+  <!-- <script src="./todo.css"></script> -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
